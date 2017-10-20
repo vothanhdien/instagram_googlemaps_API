@@ -16,7 +16,19 @@
             <div class="row justify-content-md-center">
                 <button type="button" class="btn btn-primary" id="button_search">search</button>
             </div>
-            <div class="row catalog">
+            <hr/>
+            <div id="place-checking-contain" class="row">
+                <table id="table-checking" class="table table-hover">
+                    <tbody>
+                    {{#each place}}
+                        <tr>
+                            <td>{{this}}</td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            <div id="media" class="row">
 
             </div>
         </div>

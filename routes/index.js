@@ -16,7 +16,8 @@ router.get('/', function(req, res, next) {
   // }).on('error',function (err) {
   //     console.log("Error: " + err.message);
   // });
-  res.render('index', { title: 'hello', nameuser: 'Intasgram' });
+    var place = ["aaaaa","vvvvvv","aaaaa"];
+  res.render('index', { title: 'hello', nameuser: 'Intasgram' ,place: place});
 });
 
 module.exports = router;

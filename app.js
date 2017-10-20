@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var maps = require('./routes/api/google');
+var instagram = require('./routes/api/instagram');
 
 var app = express();
 
@@ -24,6 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/api/maps',maps);
+app.use('/api/instagram',instagram);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
