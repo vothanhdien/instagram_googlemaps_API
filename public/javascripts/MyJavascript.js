@@ -1,7 +1,7 @@
 var map, infoWindow;
 var marker;
 var circle;
-var place_list = ['111111','222222','3333333'];
+var list_checking_marker = [];
 
 function initAutocomplete() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -22,6 +22,9 @@ function initAutocomplete() {
     map.addListener('click', function(event) {
         addMarker(event.latLng);
         clickOnMap(event);
+    });
+    marker.addListener('click',function (event) {
+       clickOnMarker(event);
     });
     var markers = [];
     // Listen for the event fired when the user selects a prediction and retrieve
@@ -91,25 +94,17 @@ function initAutocomplete() {
         map.fitBounds(bounds);
     });
 }
-
+// user bar event
 $('#button_search').on('click',function () {
     var context ={place: ['66666666666','66666666113','2131233']};
-    //
-    // $.getJSON( "localhost:3000/?lat=10&lng=20", function( data ) {
-    //     alert("aaaaaaaaa");
-    // });
+
     $.ajax({
         method:'GET',
         url:'http://localhost:3000/api/instagram/locations?lat=48.858844&lng=2.294351'
     }).done(function (data) {
         console.log(data);
     })
-    // // $('tbody').html(result);
-    // Object.observe(context, function() {
-    //     var result = template(context);
-    //     console.log(result);
-    // });
-    // console.log(result);
+
 });
 
 $('#geolocation').on('click',function () {
@@ -120,7 +115,6 @@ $('#geolocation').on('click',function () {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-
             // infoWindow.setPosition(pos);
             // infoWindow.setContent('Location found.');
             // infoWindow.open(map);
@@ -135,31 +129,14 @@ $('#geolocation').on('click',function () {
     }
 });
 
-function addMarker(pos, lable) {
-    if(marker!= null)
-        marker.setMap(null);
-    marker = new google.maps.Marker({
-        position: pos,
-        map: map,
-        label: lable
-    });
-    addCricle(pos,200);
-}
+$('#table-body').on('click','tr',function () {
+    alert($(this).attr('id'));
+});
 
-function addCricle(pos, radius) {
-    if(circle!= null)
-        circle.setMap(null);
-    circle = new google.maps.Circle({
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#FF0000',
-        map: map,
-        fillOpacity: 0.35,
-        center: pos,
-        radius: radius
-    });
-}
+function selectCheckingPlace() {
+    alert("aaaaaaa");
+    console.log($(this).data('id'));
+};
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.setPosition(pos);
@@ -169,8 +146,120 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.open(map);
 }
 
+//function in map
+function addMarker(pos, lable, title) {
+    if(marker != null)
+        marker.setMap(null);
+    marker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        label: lable,
+        title: title
+    });
+    addCricle(pos,400);
+}
+
+function addCheckingMarkers(pos, lable, title) {
+    // console.log("aaaaa");
+    var tmp_marker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        label: lable,
+        title: title
+    });
+    list_checking_marker.push(tmp_marker);
+}
+
+function addCricle(pos, radius) {
+    if(circle!= null)
+        circle.setMap(null);
+    circle = new google.maps.Circle({
+        strokeColor: '#ff0f00',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        map: map,
+        fillOpacity: 0.35,
+        center: pos,
+        radius: radius
+    });
+}
+function clickOnMarker(event) {
+    //xet neu la A -> bo qua
+    //neu la I ->> show infor
+    // console.log(event);
+    var lable;
+    var id;
+    if(lable){
+        $('tr').forEach(function () {
+            //get id
+            getMediaById(id);
+        })
+    }
+}
 function clickOnMap(event) {
-    console.log('click on map: ' + event);
+    // console.log(event.latLng);
+    var pos = {
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng()
+    };
+    getAllChecking(pos);
+    // updateListChecking(respond);
+    // showListCheckingOnMap(respond);
 
 }
 
+function updateListChecking(data) {
+    var html = "";
+    for(var i =0; i < data.length; i++){
+        // console.log(data[i]);
+        var tmp = '<tr id="' + data[i].id +'" data-lat="' + data[i].latitude + '" data-lng="' + data[i].longitude + '"' +
+            '><td>';
+        tmp += data[i].name;
+        tmp += '</td></tr>';
+
+        html += tmp;
+    }
+    // console.log(html);
+    $('#table-body').html(html);
+}
+
+function showListCheckingOnMap(data) {
+    clearnListCheckingMarkers();
+    console.log(data);
+    for(var i =0; i < data.length; i++){
+        var pos = new google.maps.LatLng(data[i].latitude,data[i].longitude);
+        addCheckingMarkers(pos,'I',data[i].name);
+        //add them thong tin id????
+    }
+}
+function clearnListCheckingMarkers()
+{
+    for(var i = 0; i< list_checking_marker.length; i++){
+        list_checking_marker[i].setMap(null);
+    }
+    list_checking_marker = [];
+};
+
+//send and receive data
+function getAllChecking(pos) {
+    $.ajax({
+        method:'GET',
+        url:'http://localhost:3000/api/instagram/locations?lat=' + pos.lat + '&lng=' + pos.lng
+    }).done(function (resp) {
+        // console.log(resp);
+        if(resp.meta.code === 200){
+            updateListChecking(resp.data);
+            showListCheckingOnMap(resp.data);
+        }
+
+    })
+}
+function getMediaById(id) {
+    $ajax({
+        method:'GET',
+        url:'http://localhost:3000/api/instagram/media?id=' + id
+    }).done(function (data) {
+        return data;
+    })
+}
