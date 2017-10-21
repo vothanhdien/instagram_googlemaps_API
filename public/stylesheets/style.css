@@ -1,3 +1,4 @@
+/*task*/
 html, body {
   /*padding: 50px;*/
   height: 100%;
@@ -6,9 +7,29 @@ html, body {
   font: 15px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow: auto;
 }
+li {
+  float: left;
+}
+/* Change the link color on hover */
+
+
+a {
+  color: black;
+  text-decoration: none;
+}
+a:hover{
+  color: black;
+  text-decoration: none;
+}
+
+/*class*/
 .user-area-contain{
   height: 100%;
 }
@@ -30,22 +51,37 @@ a {
   padding-right: 5px;
 }
 .search-area{
-  padding-bottom: 5px;
   padding-right: 5px;
 }
 .center{
   float: none;
   align-content: center;
 }
+.media{
+  display: block;
+  padding: 5px;
+}
+li.media :hover {
+  opacity: 0.5;
+}
+/*id*/
 #map{
   height: 100%;
 }
 #place-checking-contain{
   overflow: auto;
   background: rgba(255, 181, 186, 0.2);
-  height: 450px;
+  height: 300px;
+}
+#media{
+  overflow: auto;
+  height: 170px;
+}
+#list-media{
+
 }
 
+/*other*/
 ::-webkit-scrollbar{
   width: 5px;
   height: 5px;

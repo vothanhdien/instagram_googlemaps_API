@@ -23,9 +23,6 @@ function initAutocomplete() {
         addMarker(event.latLng);
         clickOnMap(event);
     });
-    marker.addListener('click',function (event) {
-       clickOnMarker(event);
-    });
     var markers = [];
     // Listen for the event fired when the user selects a prediction and retrieve
     // more details for that place.
@@ -96,8 +93,6 @@ function initAutocomplete() {
 }
 // user bar event
 $('#button_search').on('click',function () {
-    var context ={place: ['66666666666','66666666113','2131233']};
-
     $.ajax({
         method:'GET',
         url:'http://localhost:3000/api/instagram/locations?lat=48.858844&lng=2.294351'
@@ -130,13 +125,11 @@ $('#geolocation').on('click',function () {
 });
 
 $('#table-body').on('click','tr',function () {
-    alert($(this).attr('id'));
+    // alert($(this).attr('id'));
+    var lat = $(this).attr('data-lat');
+    var lng = $(this).attr('data-lng');
+    getMediaByLatLng(lat,lng);
 });
-
-function selectCheckingPlace() {
-    alert("aaaaaaa");
-    console.log($(this).data('id'));
-};
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.setPosition(pos);
@@ -208,14 +201,14 @@ function clickOnMap(event) {
     // showListCheckingOnMap(respond);
 
 }
-
+//show data
 function updateListChecking(data) {
     var html = "";
     for(var i =0; i < data.length; i++){
         // console.log(data[i]);
         var tmp = '<tr id="' + data[i].id +'" data-lat="' + data[i].latitude + '" data-lng="' + data[i].longitude + '"' +
             '><td>';
-        tmp += data[i].name;
+        tmp += '<a href="#">' + data[i].name + '</a>';
         tmp += '</td></tr>';
 
         html += tmp;
@@ -226,7 +219,7 @@ function updateListChecking(data) {
 
 function showListCheckingOnMap(data) {
     clearnListCheckingMarkers();
-    console.log(data);
+    // console.log(data);
     for(var i =0; i < data.length; i++){
         var pos = new google.maps.LatLng(data[i].latitude,data[i].longitude);
         addCheckingMarkers(pos,'I',data[i].name);
@@ -239,7 +232,25 @@ function clearnListCheckingMarkers()
         list_checking_marker[i].setMap(null);
     }
     list_checking_marker = [];
-};
+}
+function showListMedia(data){
+    var html = '';
+    for(var i =0; i < data.length; i++){
+        // console.log(data[i]);
+        // if(data[i].type === 'image') {
+            var tmp = '<li id="' + data[i].id + '" class="media">';
+
+            tmp += '<img src="' + data[i].images.thumbnail.url +'" class="img-responsive" alt="Image">';
+            tmp += '</li>';
+
+            html += tmp;
+            console.log(tmp);
+        // }
+
+    }
+
+    $('#list-media').html(html);
+}
 
 //send and receive data
 function getAllChecking(pos) {
@@ -255,11 +266,14 @@ function getAllChecking(pos) {
 
     })
 }
-function getMediaById(id) {
-    $ajax({
+function getMediaByLatLng(lat,lng) {
+    $.ajax({
         method:'GET',
-        url:'http://localhost:3000/api/instagram/media?id=' + id
-    }).done(function (data) {
-        return data;
+        url:'http://localhost:3000/api/instagram/media?lat=' + lat + '&lng=' + lng
+    }).done(function (resp) {
+        console.log(resp);
+        if(resp.meta.code === 200) {
+            showListMedia(resp.data);
+        }
     })
 }
