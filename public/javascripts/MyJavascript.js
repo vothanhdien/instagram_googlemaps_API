@@ -149,7 +149,37 @@ $('#list-media').on('click','li',function () {
     // alert('click on image id : ' + id);
     showModal(id);
 });
+//=================== mo rong va thu hep bang dieu khien==================
+$('#extend').on('click',function () {
 
+   if($('#extend').attr('data-type') === 'extend'){
+       // mo rong
+       extendInstagramBar();
+       $('#extend').html('&larr;');
+       $('#extend').attr('data-type','collapse');
+   }else{
+       collapseInstagramBar();
+       //thu hep
+       $('#extend').html('&rarr;');
+       $('#extend').attr('data-type','extend');
+   }
+});
+function extendInstagramBar() {
+    $('#instagram').attr('class',"gradient col-sm-8");
+    $('#map').attr('class',"col-sm-4");
+    $('#left-side').attr('class',"row");
+    $('#instagram-area').attr('class',"col-sm-4");
+    $('#media-container').attr('class',"col-sm-8 extended-media-container");
+    $('#place-checking-contain').attr('class','extended-place-checking-container');
+}
+function collapseInstagramBar() {
+    $('#instagram').attr('class',"gradient col-sm-4");
+    $('#map').attr('class',"col-sm-8");
+    $('#left-side').attr('class',"");
+    $('#instagram-area').attr('class',"");
+    $('#media-container').attr('class',"collapsed-media-container");
+    $('#place-checking-contain').attr('class','collapsed-place-checking-container');
+}
 $(document).keyup(function(e) {
     if (e.keyCode == 27) { // escape key maps to keycode `27`
         closeModal();
@@ -313,9 +343,6 @@ function showMediaModal(data){
     }else{
         $('.img-large').attr('src',data.images.standard_resolution.url);
     }
-
-
-
 }
 //send and receive data
 function getAllChecking(pos) {

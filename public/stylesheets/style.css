@@ -68,12 +68,24 @@ li.media :hover {
 #place-checking-contain{
   overflow: auto;
   background: rgba(255, 181, 186, 0.2);
-  height: 500px;
 }
-#media{
+.collapsed-place-checking-container{
+  height: 300px;
+}
+.extended-place-checking-container{
+  height: 480px;
+}
+#media-container{
   overflow: auto;
+}
+.collapsed-media-container{
+  height: 170px;
+}
+.extended-media-container{
+  padding-top: 50px;
   height: 600px;
 }
+
 #list-media{
 
 }

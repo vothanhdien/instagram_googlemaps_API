@@ -1,10 +1,9 @@
 <div class="row max-height">
-    <div class="gradient col-sm-8">
-        <div class="row">
-            <div id='instagram-area' class="col-sm-4">
-                <span class="close cursor" onclick="">&rarr;&larr;</span>
-                <img src="/images/Instagram_logo.png"
-                alt="instagram" style="height: 50px">
+    <div id="instagram" class="gradient col-sm-4">
+        <div id='left-side' class="">
+            <div id='instagram-area' class="">
+                <span id="extend" class="close cursor" data-type="extend">&rarr;</span>
+                <img src="/images/Instagram_logo.png" alt="instagram" style="height: 50px">
                 <div class="row search-area">
                     <div class="col-11" style="padding: 0">
                         <input type="text" class="form-control" id="place_input" placeholder="Search..." tabindex="1">
@@ -16,21 +15,23 @@
                     </div>
                 </div>
                 <hr/>
-                <div id="place-checking-contain" class="row">
+                <div id="place-checking-contain" class="collapsed-place-checking-container">
                     <table id="table-checking" class="table table-hover">
                         <tbody id="table-body" class="list_location">
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div id="media" class="col-sm-8">
+            <hr/>
+            <div id="media-container" class="collapsed-media-container">
+
                 <ul id="list-media">
 
                 </ul>
             </div>
         </div>
     </div>
-    <div id='map' class="col-sm-4">
+    <div id='map' class="col-sm-8">
 
     </div>
     <div id="myModal" class="modal">
