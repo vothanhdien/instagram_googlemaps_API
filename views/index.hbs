@@ -1,34 +1,36 @@
 <div class="row max-height">
-    <div class="instagram-area-container gradient col-sm-3">
-        <div class="instagram-area">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/1200px-Instagram_logo.svg.png"
-            alt="instagram" style="height: 50px">
-            <div class="row search-area">
-                <div class="col-11" style="padding: 0">
-                    <input type="text" class="form-control" id="place_input" placeholder="Search..." tabindex="1">
+    <div class="gradient col-sm-8">
+        <div class="row">
+            <div id='instagram-area' class="col-sm-4">
+                <span class="close cursor" onclick="">&rarr;&larr;</span>
+                <img src="/images/Instagram_logo.png"
+                alt="instagram" style="height: 50px">
+                <div class="row search-area">
+                    <div class="col-11" style="padding: 0">
+                        <input type="text" class="form-control" id="place_input" placeholder="Search..." tabindex="1">
+                    </div>
+                    <div class="col-1" style="padding-left: 0">
+                        <button type="button" class="btn btn-danger" id="geolocation">
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-1" style="padding-left: 0">
-                    <button type="button" class="btn btn-danger" id="geolocation">
-                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-                    </button>
+                <hr/>
+                <div id="place-checking-contain" class="row">
+                    <table id="table-checking" class="table table-hover">
+                        <tbody id="table-body" class="list_location">
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <hr/>
-            <div id="place-checking-contain" class="row">
-                <table id="table-checking" class="table table-hover">
-                    <tbody id="table-body" class="list_location">
-                    </tbody>
-                </table>
-            </div>
-            <hr/>
-            <div id="media" class="row">
+            <div id="media" class="col-sm-8">
                 <ul id="list-media">
 
                 </ul>
             </div>
         </div>
     </div>
-    <div id='map' class="col-sm-9">
+    <div id='map' class="col-sm-4">
 
     </div>
     <div id="myModal" class="modal">
@@ -43,7 +45,7 @@
                 <span>//caption</span>
             </div>
 
-            <div class="mySlides">
+            <div id="myMedia" class="mySlides">
                 <img class="img-large" src="/images/loading-image.jpg"
                 alt="image">
             </div>

@@ -150,9 +150,15 @@ $('#list-media').on('click','li',function () {
     showModal(id);
 });
 
+$(document).keyup(function(e) {
+    if (e.keyCode == 27) { // escape key maps to keycode `27`
+        closeModal();
+    }
+});
+
 function closeModal() {
     $('.circle-img').attr('src','/images/loading-profile-image.jpg');
-    $('.img-large').attr('src','/images/loading-image.jpg');
+    $('#myMedia').html('<img class="img-large" src="/images/loading-image.jpg" alt="image">');
     $('.user-name').html('//user name');
     $('.caption-text').html('//caption');
     $('#myModal').hide();
@@ -261,28 +267,53 @@ function clearnListCheckingMarkers()
 }
 function showListMedia(data){
     var html = '';
+    var tmp;
     for(var i =0; i < data.length; i++){
         // console.log(data[i]);
-        // if(data[i].type === 'image') {
-            var tmp = '<li id="' + data[i].id + '" class="media">';
-            tmp += '<img src="' + data[i].images.thumbnail.url +'" class="img-responsive" alt="Image">';
+        if(data[i].type === 'video') {
+            tmp = '<li id="' + data[i].id + '" class="media">';
+            tmp += '<video class="video-resolution" allowfullscreen="true" controls>';
+            tmp += '<source src="' + data[i].videos.low_bandwidth.url + '" type="video/mp4">';
+            tmp += '</video></li>';
+            html += tmp;
+
+        }else{
+            tmp = '<li id="' + data[i].id + '" class="media">';
+            tmp += '<img src="' + data[i].images.thumbnail.url +'" class="img-thumbnail" alt="Image">';
             tmp += '</li>';
 
             html += tmp;
-            console.log(tmp);
-        // }
+        }
 
     }
 
     $('#list-media').html(html);
 }
 function showMediaModal(data){
-
     // user information;
     $('.circle-img').attr('src',data.user.profile_picture);
     $('.user-name').html(data.user.username);
-    $('.caption-text').html(data.caption.text);
-    $('.img-large').attr('src',data.images.standard_resolution.url);
+    if(data.caption === null){
+        $('.caption-text').html('<i> no caption </i>');
+    }else{
+        $('.caption-text').html(data.caption.text);
+    }
+    // console.log(data.type);
+    if(data.type === 'video'){
+
+        var html = '<video width="' + data.videos.standard_resolution.width +'" ' +
+            'height="'+ data.videos.standard_resolution.height +'" allowfullscreen="true" controls autoplay>';
+        // var html = '<video width="800" height="800" class="img-responsive" allowfullscreen="true" controls autoplay>';
+        html += '<source src="' + data.videos.standard_resolution.url + '" type="video/mp4">';
+        html += '</video>';
+        console.log(html);
+
+        $('#myMedia').html(html);
+
+    }else{
+        $('.img-large').attr('src',data.images.standard_resolution.url);
+    }
+
 
 
 }
@@ -317,7 +348,7 @@ function getMediaById(id) {
         method:'GET',
         url:'http://localhost:3000/api/instagram/id?id=' + id
     }).done(function (resp) {
-        console.log(resp);
+        // console.log(resp);
         if(resp.meta.code === 200) {
             showMediaModal(resp.data);
         }

@@ -39,16 +39,12 @@ a:hover{
   background: -o-linear-gradient(bottom right, #f9ed32, #ee2a7b,#002aff); /* For Opera 11.1 to 12.0 */
   background: -moz-linear-gradient(bottom right, #f9ed32, #ee2a7b,#002aff); /* For Firefox 3.6 to 15 */
   background: linear-gradient(to bottom right, #f9ed32, #ee2a7b,#002aff); /* Standard syntax */
+  height: 100%;
 }
 .max-height{
   height:100%;
   margin-left: 0;
   margin-right: 0;
-}
-.instagram-area{
-  padding-left: 10px;
-  padding-top: 5px;
-  padding-right: 5px;
 }
 .search-area{
   padding-right: 5px;
@@ -59,7 +55,8 @@ a:hover{
 }
 .media{
   display: block;
-  padding: 5px;
+  padding: 10px;
+  background: white;
 }
 li.media :hover {
   opacity: 0.5;
@@ -71,16 +68,20 @@ li.media :hover {
 #place-checking-contain{
   overflow: auto;
   background: rgba(255, 181, 186, 0.2);
-  height: 300px;
+  height: 500px;
 }
 #media{
   overflow: auto;
-  height: 170px;
+  height: 600px;
 }
 #list-media{
 
 }
-
+#instagram-area{
+  padding-left: 10px;
+  padding-top: 5px;
+  padding-right: 5px;
+}
 /*other*/
 ::-webkit-scrollbar{
   width: 5px;
@@ -132,7 +133,9 @@ li.media :hover {
   width: 90%;
   max-width: 1200px;
 }
-
+.cursor {
+  cursor: pointer
+}
 /* The Close Button */
 .close {
   color: white;
@@ -151,7 +154,8 @@ li.media :hover {
 }
 
 .mySlides {
-  text-align: center; display: block;
+  text-align: center;
+  display: block;
 }
 
 /* Next & previous buttons */
@@ -230,4 +234,13 @@ li.media :hover {
   padding-top: 5px;
   border-radius:50%;
   background-position-y:25%
+}
+
+.img-thumbnail{
+  width: 150px;
+  height:150px;
+}
+.video-resolution{
+  width: 150px;
+  height:147px;
 }
