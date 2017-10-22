@@ -70,24 +70,25 @@ li.media :hover {
   background: rgba(255, 181, 186, 0.2);
 }
 .collapsed-place-checking-container{
-  height: 300px;
+  height: 230px;
 }
 .extended-place-checking-container{
-  height: 480px;
+  height: 500px;
 }
 #media-container{
   overflow: auto;
+  padding-left: 50px;
 }
 .collapsed-media-container{
-  height: 170px;
+  height: 250px;
 }
 .extended-media-container{
-  padding-top: 50px;
-  height: 600px;
+  margin-top: 50px;
+  height: 570px;
 }
 
 #list-media{
-
+  float: right;
 }
 #instagram-area{
   padding-left: 10px;

@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
   // }).on('error',function (err) {
   //     console.log("Error: " + err.message);
   // });
-  res.render('index', { title: 'hello'});
+  res.render('index', { title: 'Tìm kiếm địa điểm checking'});
 });
 
 module.exports = router;
