@@ -1,7 +1,8 @@
 <div class="row max-height">
-    <div class="user-area-contain gradient col-sm-3">
-        <div class="user-area">
-            <h1>{{nameuser}}</h1>
+    <div class="instagram-area-container gradient col-sm-3">
+        <div class="instagram-area">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Instagram_logo.svg/1200px-Instagram_logo.svg.png"
+            alt="instagram" style="height: 50px">
             <div class="row search-area">
                 <div class="col-11" style="padding: 0">
                     <input type="text" class="form-control" id="place_input" placeholder="Search..." tabindex="1">
@@ -29,5 +30,27 @@
     </div>
     <div id='map' class="col-sm-9">
 
+    </div>
+    <div id="myModal" class="modal">
+        <span class="close cursor" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <div class="user-infor" align="center">
+                <img src="/images/loading-profile-image.jpg"
+                     alt="user-profile-picture" class="circle-img">
+                <p class="user-name">//user information</p>
+            </div>
+            <div class="caption-text">
+                <span>//caption</span>
+            </div>
+
+            <div class="mySlides">
+                <img class="img-large" src="/images/loading-image.jpg"
+                alt="image">
+            </div>
+
+            <!--<a class="prev" onclick="plusSlides(-1)">&#10094;</a>-->
+            <!--<a class="next" onclick="plusSlides(1)">&#10095;</a>-->
+
+        </div>
     </div>
 </div>

@@ -6,7 +6,7 @@ var list_checking_marker = [];
 function initAutocomplete() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 10.7626391, lng: 106.6820268},
-        zoom: 16
+        zoom: 13
     });
     infoWindow = new google.maps.InfoWindow;
 
@@ -48,13 +48,14 @@ function initAutocomplete() {
                     return;
                 }
                 addMarker(place.geometry.location);
-
-                if (place.geometry.viewport) {
-                    // Only geocodes have viewport.
-                    bounds.union(place.geometry.viewport);
-                } else {
-                    bounds.extend(place.geometry.location);
-                }
+                getAllChecking(place.geometry.location);
+                map.center(place.geometry.location);
+                // if (place.geometry.viewport) {
+                //     // Only geocodes have viewport.
+                //     bounds.union(place.geometry.viewport);
+                // } else {
+                //     bounds.extend(place.geometry.location);
+                // }
             });//end place.for each
 
         }//end if
@@ -91,7 +92,7 @@ function initAutocomplete() {
         map.fitBounds(bounds);
     });
 }
-// user bar event
+// instagram bar event
 $('#button_search').on('click',function () {
     $.ajax({
         method:'GET',
@@ -103,7 +104,7 @@ $('#button_search').on('click',function () {
 });
 
 $('#geolocation').on('click',function () {
-    alert('click geolocation');
+    // alert('click geolocation');
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             var pos = {
@@ -114,7 +115,8 @@ $('#geolocation').on('click',function () {
             // infoWindow.setContent('Location found.');
             // infoWindow.open(map);
             map.setCenter(pos);
-            addMarker(pos,'a');
+            addMarker(pos,'A','your location');
+            getAllChecking(pos);
         }, function() {
             handleLocationError(true, infoWindow, map.getCenter());
         });
@@ -122,13 +124,6 @@ $('#geolocation').on('click',function () {
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
     }
-});
-
-$('#table-body').on('click','tr',function () {
-    // alert($(this).attr('id'));
-    var lat = $(this).attr('data-lat');
-    var lng = $(this).attr('data-lng');
-    getMediaByLatLng(lat,lng);
 });
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -139,6 +134,36 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
     infoWindow.open(map);
 }
 
+$('#table-body').on('click','tr',function () {
+    // alert($(this).attr('id'));
+    var lat = $(this).attr('data-lat');
+    var lng = $(this).attr('data-lng');
+    getMediaByLatLng(lat,lng);
+    $('#list-media').text('loading.......');
+});
+
+$('#list-media').on('click','li',function () {
+    // alert($(this).attr('id'));
+    var id = $(this).attr('id');
+    // getMediaByLatLng(lat,lng);
+    // alert('click on image id : ' + id);
+    showModal(id);
+});
+
+function closeModal() {
+    $('.circle-img').attr('src','/images/loading-profile-image.jpg');
+    $('.img-large').attr('src','/images/loading-image.jpg');
+    $('.user-name').html('//user name');
+    $('.caption-text').html('//caption');
+    $('#myModal').hide();
+    // showModal('1630917990667500943_1778902051');
+    // alert("click on close");
+}
+
+function showModal(id) {
+    $('#myModal').show();
+    getMediaById(id);
+}
 //function in map
 function addMarker(pos, lable, title) {
     if(marker != null)
@@ -149,16 +174,29 @@ function addMarker(pos, lable, title) {
         label: lable,
         title: title
     });
-    addCricle(pos,400);
+    // marker.on('click',clickOnMarker());
+    // addCricle(pos,400);
 }
 
 function addCheckingMarkers(pos, lable, title) {
     // console.log("aaaaa");
     var tmp_marker = new google.maps.Marker({
+        animation: google.maps.Animation.DROP,
         position: pos,
         map: map,
         label: lable,
         title: title
+    });
+
+    tmp_marker.addListener('click',function () {
+        // alert(this.label);
+        if(this.label === 'I'){
+            var lat = this.position.lat();
+            var lng = this.position.lng();
+            getMediaByLatLng(lat,lng);
+            $('#list-media').text('loading.......');
+        }
+
     });
     list_checking_marker.push(tmp_marker);
 }
@@ -177,21 +215,9 @@ function addCricle(pos, radius) {
         radius: radius
     });
 }
-function clickOnMarker(event) {
-    //xet neu la A -> bo qua
-    //neu la I ->> show infor
-    // console.log(event);
-    var lable;
-    var id;
-    if(lable){
-        $('tr').forEach(function () {
-            //get id
-            getMediaById(id);
-        })
-    }
-}
 function clickOnMap(event) {
     // console.log(event.latLng);
+    $('#table-body').text('loading........');
     var pos = {
         lat: event.latLng.lat(),
         lng: event.latLng.lng()
@@ -239,7 +265,6 @@ function showListMedia(data){
         // console.log(data[i]);
         // if(data[i].type === 'image') {
             var tmp = '<li id="' + data[i].id + '" class="media">';
-
             tmp += '<img src="' + data[i].images.thumbnail.url +'" class="img-responsive" alt="Image">';
             tmp += '</li>';
 
@@ -251,7 +276,16 @@ function showListMedia(data){
 
     $('#list-media').html(html);
 }
+function showMediaModal(data){
 
+    // user information;
+    $('.circle-img').attr('src',data.user.profile_picture);
+    $('.user-name').html(data.user.username);
+    $('.caption-text').html(data.caption.text);
+    $('.img-large').attr('src',data.images.standard_resolution.url);
+
+
+}
 //send and receive data
 function getAllChecking(pos) {
     $.ajax({
@@ -271,9 +305,21 @@ function getMediaByLatLng(lat,lng) {
         method:'GET',
         url:'http://localhost:3000/api/instagram/media?lat=' + lat + '&lng=' + lng
     }).done(function (resp) {
-        console.log(resp);
+        // console.log(resp);
         if(resp.meta.code === 200) {
             showListMedia(resp.data);
+        }
+    })
+}
+
+function getMediaById(id) {
+    $.ajax({
+        method:'GET',
+        url:'http://localhost:3000/api/instagram/id?id=' + id
+    }).done(function (resp) {
+        console.log(resp);
+        if(resp.meta.code === 200) {
+            showMediaModal(resp.data);
         }
     })
 }
