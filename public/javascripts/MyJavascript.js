@@ -334,7 +334,7 @@ function showMediaModal(data){
 function getAllChecking(pos) {
     $.ajax({
         method:'GET',
-        url:'http://localhost:3000/api/instagram/locations?lat=' + pos.lat + '&lng=' + pos.lng
+        url:'https://instagram-and-google-map-api.herokuapp.com/api/instagram/locations?lat=' + pos.lat + '&lng=' + pos.lng
     }).done(function (resp) {
         // console.log(resp);
         if(resp.meta.code === 200){
@@ -347,7 +347,7 @@ function getAllChecking(pos) {
 function getMediaByLatLng(lat,lng) {
     $.ajax({
         method:'GET',
-        url:'http://localhost:3000/api/instagram/media?lat=' + lat + '&lng=' + lng
+        url:'https://instagram-and-google-map-api.herokuapp.com/api/instagram/media?lat=' + lat + '&lng=' + lng
     }).done(function (resp) {
         // console.log(resp);
         if(resp.meta.code === 200) {
@@ -359,7 +359,7 @@ function getMediaByLatLng(lat,lng) {
 function getMediaById(id) {
     $.ajax({
         method:'GET',
-        url:'http://localhost:3000/api/instagram/id?id=' + id
+        url:'https://instagram-and-google-map-api.herokuapp.com/api/instagram/id?id=' + id
     }).done(function (resp) {
         // console.log(resp);
         if(resp.meta.code === 200) {
