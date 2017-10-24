@@ -2,6 +2,8 @@ var map, infoWindow;
 var marker;
 var circle;
 var list_checking_marker = [];
+var currentIndex = -1;
+var countMedia = -1;
 
 function initAutocomplete() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -131,10 +133,19 @@ $('#table-body').on('click','tr',function () {
 $('#list-media').on('click','li',function () {
     // alert($(this).attr('id'));
     var id = $(this).attr('id');
+    currentIndex = parseInt($(this).attr('data-index'));
     // getMediaByLatLng(lat,lng);
     // alert('click on image id : ' + id);
     showModal(id);
 });
+//------------------chuyen bai viet
+function plusSlides(n) {
+    //cong them index n
+    currentIndex = (currentIndex + n + countMedia)%countMedia;
+    // alert(currentIndex);
+    var slideId = $(".media")[currentIndex].id;
+    showModal(slideId);
+}
 //=================== mo rong va thu hep bang dieu khien==================
 $('#extend').on('click',function () {
 
@@ -282,25 +293,22 @@ function clearnListCheckingMarkers()
     list_checking_marker = [];
 }
 function showListMedia(data){
+    countMedia = data.length;
     var html = '';
     var tmp;
     for(var i =0; i < data.length; i++){
         // console.log(data[i]);
+        //issue
+        tmp = '<li id="' + data[i].id + '" class="media" data-index="'+ i +'">';
         if(data[i].type === 'video') {
-            tmp = '<li id="' + data[i].id + '" class="media">';
             tmp += '<video class="video-resolution" allowfullscreen="true" controls>';
-            tmp += '<source src="' + data[i].videos.low_bandwidth.url + '" type="video/mp4">';
-            tmp += '</video></li>';
-            html += tmp;
+            tmp += '<source src="' + data[i].videos.low_bandwidth.url + '" type="video/mp4"></video>';
 
         }else{
-            tmp = '<li id="' + data[i].id + '" class="media">';
             tmp += '<img src="' + data[i].images.thumbnail.url +'" class="img-thumbnail" alt="Image">';
-            tmp += '</li>';
-
-            html += tmp;
         }
-
+        tmp += '</li>';
+        html += tmp;
     }
 
     $('#list-media').html(html);
@@ -327,7 +335,7 @@ function showMediaModal(data){
         $('#myMedia').html(html);
 
     }else{
-        $('.img-large').attr('src',data.images.standard_resolution.url);
+        $('#myMedia').html('<img class="img-large" src="' + data.images.standard_resolution.url + '" alt="image">');
     }
 }
 //send and receive data
