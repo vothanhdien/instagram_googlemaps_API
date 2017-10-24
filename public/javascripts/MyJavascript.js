@@ -23,7 +23,11 @@ function initAutocomplete() {
     // });
     map.addListener('click', function(event) {
         addMarker(event.latLng);
-        clickOnMap(event);
+        var pos = {
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng()
+        };
+        clickOnMap(pos);
     });
     var markers = [];
     // Listen for the event fired when the user selects a prediction and retrieve
@@ -43,41 +47,56 @@ function initAutocomplete() {
 
         // For each place, get the icon, name and location.
         var bounds = new google.maps.LatLngBounds();
-        places.forEach(function(place) {
-            if (!place.geometry) {
-                console.log("Returned place contains no geometry");
-                return;
-            }
-            var icon = {
-                url: place.icon,
-                size: new google.maps.Size(71, 71),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17, 34),
-                scaledSize: new google.maps.Size(25, 25)
+        if(places.length === 1){
+            var pos = {
+                lat: places[0].geometry.location.lat(),
+                lng: places[0].geometry.location.lng()
             };
+            addMarker(places[0].geometry.location);
+            map.setCenter(places[0].geometry.location);
+            clickOnMap(pos);
+        }else{
+            places.forEach(function(place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                };
 
-            // Create a marker for each place.
-            var tmp_marker = new google.maps.Marker({
-                map: map,
-                icon: icon,
-                title: place.name,
-                position: place.geometry.location
-            });
-            tmp_marker.addListener('click',function (event) {
-                if(marker != null)
-                    marker.setMap(null);
-                clickOnMap(event);
-            });
-            markers.push(tmp_marker);
+                // Create a marker for each place.
+                var tmp_marker = new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                });
+                tmp_marker.addListener('click',function (event) {
+                    if(marker != null)
+                        marker.setMap(null);
+                    var pos = {
+                        lat: event.latLng.lat(),
+                        lng: event.latLng.lng()
+                    };
+                    clickOnMap(pos);
+                });
+                markers.push(tmp_marker);
 
-            if (place.geometry.viewport) {
-                // Only geocodes have viewport.
-                bounds.union(place.geometry.viewport);
-            } else {
-                bounds.extend(place.geometry.location);
-            }
-        });//end place.for each
-        map.fitBounds(bounds);
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+
+            });//end place.for each
+            map.fitBounds(bounds);
+        }//end else
     });
 }
 
@@ -222,6 +241,12 @@ function addCheckingMarkers(pos, lable, title, id) {
         $('#list-media').text('loading.......');
 
     });
+    tmp_marker.addListener("dblclick",function () {
+        map.setZoom(18);
+        // map.setCenter(marker.getPosition());
+        map.panTo(this.getPosition());
+    });
+
     list_checking_marker.push(tmp_marker);
 }
 
@@ -239,16 +264,11 @@ function addCricle(pos, radius) {
         radius: radius
     });
 }
-function clickOnMap(event) {
+function clickOnMap(pos) {
     // console.log(event.latLng);
     $('#table-body').text('loading........');
-    var pos = {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng()
-    };
+
     getAllChecking(pos);
-    // updateListChecking(respond);
-    // showListCheckingOnMap(respond);
 
 }
 //show data
@@ -380,9 +400,6 @@ function changeMarkerIcon(id) {
         if (finded === false && marker.data_id === id) {
             finded = true;
             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png');
-            map.setZoom(18);
-            // map.setCenter(marker.getPosition());
-            map.panTo(marker.getPosition());
         }
         else
             marker.setIcon('http://maps.google.com/mapfiles/ms/icons/purple-dot.png');
