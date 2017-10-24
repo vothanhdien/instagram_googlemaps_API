@@ -370,7 +370,7 @@ function getMediaById(id) {
 //ham pause video
 function pauseVideo(p) {
     $(p).trigger('pause');
-    alert("click");
+    // alert("click");
 }
 
 //change marker icon
