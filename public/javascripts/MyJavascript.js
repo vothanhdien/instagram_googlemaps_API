@@ -8,7 +8,7 @@ var countMedia = -1;
 function initAutocomplete() {
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 10.7626391, lng: 106.6820268},
-        zoom: 13
+        zoom: 14
     });
     infoWindow = new google.maps.InfoWindow;
 
@@ -80,16 +80,6 @@ function initAutocomplete() {
         map.fitBounds(bounds);
     });
 }
-// instagram bar event
-$('#button_search').on('click',function () {
-    $.ajax({
-        method:'GET',
-        url:'http://localhost:3000/api/instagram/locations?lat=48.858844&lng=2.294351'
-    }).done(function (data) {
-        console.log(data);
-    })
-
-});
 
 $('#geolocation').on('click',function () {
     // alert('click geolocation');
@@ -126,6 +116,7 @@ $('#table-body').on('click','tr',function () {
     // alert($(this).attr('id'));
     var lat = $(this).attr('data-lat');
     var lng = $(this).attr('data-lng');
+    changeMarkerIcon($(this).attr('id'));
     getMediaByLatLng(lat,lng);
     $('#list-media').text('loading.......');
 });
@@ -211,24 +202,24 @@ function addMarker(pos, lable, title) {
     // addCricle(pos,400);
 }
 
-function addCheckingMarkers(pos, lable, title) {
+function addCheckingMarkers(pos, lable, title, id) {
     // console.log("aaaaa");
     var tmp_marker = new google.maps.Marker({
         animation: google.maps.Animation.DROP,
+        icon: 'http://maps.google.com/mapfiles/ms/icons/purple-dot.png',
         position: pos,
         map: map,
-        label: lable,
-        title: title
+        title: title,
+        data_id: id
     });
 
     tmp_marker.addListener('click',function () {
         // alert(this.label);
-        if(this.label === 'I'){
-            var lat = this.position.lat();
-            var lng = this.position.lng();
-            getMediaByLatLng(lat,lng);
-            $('#list-media').text('loading.......');
-        }
+        changeMarkerIcon(this.data_id);
+        var lat = this.position.lat();
+        var lng = this.position.lng();
+        getMediaByLatLng(lat,lng);
+        $('#list-media').text('loading.......');
 
     });
     list_checking_marker.push(tmp_marker);
@@ -281,7 +272,7 @@ function showListCheckingOnMap(data) {
     // console.log(data);
     for(var i =0; i < data.length; i++){
         var pos = new google.maps.LatLng(data[i].latitude,data[i].longitude);
-        addCheckingMarkers(pos,'I',data[i].name);
+        addCheckingMarkers(pos,'I',data[i].name, data[i].id);
         //add them thong tin id????
     }
 }
@@ -301,7 +292,7 @@ function showListMedia(data){
         //issue
         tmp = '<li id="' + data[i].id + '" class="media" data-index="'+ i +'">';
         if(data[i].type === 'video') {
-            tmp += '<video class="video-resolution" allowfullscreen="true" controls>';
+            tmp += '<video class="video-resolution" allowfullscreen="true" controls onclick="pauseVideo(this)">';
             tmp += '<source src="' + data[i].videos.low_bandwidth.url + '" type="video/mp4"></video>';
 
         }else{
@@ -342,7 +333,7 @@ function showMediaModal(data){
 function getAllChecking(pos) {
     $.ajax({
         method:'GET',
-        url:'https://instagram-and-google-map-api.herokuapp.com/api/instagram/locations?lat=' + pos.lat + '&lng=' + pos.lng
+        url:'/api/instagram/locations?lat=' + pos.lat + '&lng=' + pos.lng
     }).done(function (resp) {
         // console.log(resp);
         if(resp.meta.code === 200){
@@ -355,7 +346,7 @@ function getAllChecking(pos) {
 function getMediaByLatLng(lat,lng) {
     $.ajax({
         method:'GET',
-        url:'https://instagram-and-google-map-api.herokuapp.com/api/instagram/media?lat=' + lat + '&lng=' + lng
+        url:'/api/instagram/media?lat=' + lat + '&lng=' + lng
     }).done(function (resp) {
         // console.log(resp);
         if(resp.meta.code === 200) {
@@ -367,11 +358,43 @@ function getMediaByLatLng(lat,lng) {
 function getMediaById(id) {
     $.ajax({
         method:'GET',
-        url:'https://instagram-and-google-map-api.herokuapp.com/api/instagram/id?id=' + id
+        url:'/api/instagram/id?id=' + id
     }).done(function (resp) {
         // console.log(resp);
         if(resp.meta.code === 200) {
             showMediaModal(resp.data);
         }
     })
+}
+
+//ham pause video
+function pauseVideo(p) {
+    $(p).trigger('pause');
+    alert("click");
+}
+
+//change marker icon
+function changeMarkerIcon(id) {
+    var finded = false;
+    list_checking_marker.forEach(function (marker) {
+        if (finded === false && marker.data_id === id) {
+            finded = true;
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/yellow-dot.png');
+            map.setZoom(18);
+            // map.setCenter(marker.getPosition());
+            map.panTo(marker.getPosition());
+        }
+        else
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/purple-dot.png');
+    });
+    finded = false;
+    var list_address = $('tr');
+    for(var i = 0; i< list_address.length; i++){
+        if(finded === false && list_address[i].id === id){
+            list_address[i].style.backgroundColor = 'white';
+            finded = true;
+        }
+        else
+            list_address[i].style.backgroundColor = "";
+    }
 }
